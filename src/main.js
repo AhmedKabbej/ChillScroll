@@ -17,7 +17,7 @@ window.addEventListener('DOMContentLoaded', () => {
   let musicStarted = false;
 
   // Au début, on montre uniquement l'écran d'accueil
-  welcomeScreen.style.display = 'flex';  // ou block selon ton CSS
+  welcomeScreen.style.display = 'flex';  // ou 'block' selon ton CSS
   loadingScreen.style.display = 'none';
   screen3.style.display = 'none';
 
@@ -63,28 +63,31 @@ window.addEventListener('DOMContentLoaded', () => {
   startBtn.addEventListener('click', () => {
     // Dès qu'on clique, on masque accueil, on affiche chargement
     welcomeScreen.style.display = 'none';
-    loadingScreen.style.display = 'flex'; // visible
+    loadingScreen.style.display = 'flex';
 
-    // Préchargement des images
     images = [];
     loadedCount = 0;
 
+    const minLoadingDuration = 6000; // Durée minimale du chargement en ms (6s)
+    const startTime = performance.now();
+
     for (let i = startIndex; i <= endIndex; i++) {
       const img = new Image();
-      img.src = `adrieng/IMG_7994_${i}.jpg`;  // adapte chemin si besoin
+      img.src = `adrieng/IMG_7994_${i}.jpg`;
       img.classList.add('hidden');
       img.onload = () => {
         loadedCount++;
         loadingScreen.textContent = `Chargement des images... (${loadedCount} / ${nbImages})`;
+
         if (loadedCount === nbImages) {
-          // Quand tout est chargé : on masque chargement, on affiche écran principal
-          loadingScreen.style.display = 'none';
-          screen3.style.display = 'block';
-
-          // Ajouter toutes les images à screen3
-          images.forEach(image => screen3.appendChild(image));
-
-          initScroll();
+          const elapsedTime = performance.now() - startTime;
+          const waitTime = Math.max(0, minLoadingDuration - elapsedTime);
+          setTimeout(() => {
+            loadingScreen.style.display = 'none';
+            screen3.style.display = 'block';
+            images.forEach(image => screen3.appendChild(image));
+            initScroll();
+          }, waitTime);
         }
       };
       images.push(img);
