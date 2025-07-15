@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite App</title>
+  </head>
+  <body>
+    <div id="app"></div>
+   
+    <div id="welcomeScreen">
+      <img src="Homescreenboooy.jpg" alt="Accueil" style="width:100vw; height:100vh; object-fit:cover; position:fixed; top:0; left:0; z-index:0;" />
+      <button id="startBtn" style="position:fixed; top:50%; left:20%; transform: translate(-50%, -50%); z-index:10; padding: 1em 2em; font-size: 2rem; cursor:pointer;">
+        Démarrer
+      </button>
+    </div>
+  
+    <div id="screen3" style="display:none;"></div>
+    <div id="screen3">
+      
+    </div>
+    <audio id="bgMusic" src="public/music1.mp3" preload="auto"></audio>
+    <div id="scrollHint" onclick="window.scrollBy({ top: window.innerHeight, behavior: 'smooth' })">
+      <div class="arrow"></div>
+      <div>SCROLL ↓</div>
+    </div>
+    
+    <script type="module" src="/src/main.js"></script>
+    
+  </body>
+</html>
