@@ -18,7 +18,11 @@
   
     <div id="screen3" style="display:none;"></div>
     <div id="screen3">
-      
+      <div id="loadingScreen" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; 
+  background:#222; color:#fff; font-size:2rem; display:flex; justify-content:center; align-items:center; z-index:1000;">
+  Chargement des images...
+</div>
+
     </div>
     <audio id="bgMusic" src="public/music1.mp3" preload="auto"></audio>
     <div id="scrollHint" onclick="window.scrollBy({ top: window.innerHeight, behavior: 'smooth' })">

@@ -1,9 +1,10 @@
 import './style.css';
 
 window.addEventListener('DOMContentLoaded', () => {
-    
+  
   const welcomeScreen = document.getElementById('welcomeScreen');
   const startBtn = document.getElementById('startBtn');
+  const loadingScreen = document.getElementById('loadingScreen');
   const screen3 = document.getElementById('screen3');
   const audio = document.getElementById('bgMusic');
   audio.loop = true;
@@ -15,46 +16,42 @@ window.addEventListener('DOMContentLoaded', () => {
 
   let musicStarted = false;
 
+  // Au début, on montre uniquement l'écran d'accueil
+  welcomeScreen.style.display = 'flex';  // ou block selon ton CSS
+  loadingScreen.style.display = 'none';
+  screen3.style.display = 'none';
+
+  let images = [];
+  let loadedCount = 0;
+
   function startMusic() {
     if (!musicStarted) {
       audio.play().then(() => {
         musicStarted = true;
       }).catch(() => {
-        // autoplay bloqué, ne rien faire
+        // autoplay bloqué, on ignore
       });
     }
   }
 
   function initScroll() {
-    welcomeScreen.style.display = 'none';
-    screen3.style.display = 'block';
     document.body.style.height = `${pageLength * window.innerHeight}px`;
-
-    if (!screen3.hasChildNodes()) {
-      for (let i = startIndex; i <= endIndex; i++) {
-        const img = document.createElement('img');
-        img.src = `/adrieng/IMG_7994_${i}.jpg`;
-        img.classList.add('hidden');
-        screen3.appendChild(img);
-      }
-    }
 
     function onScroll() {
       startMusic();
       const scrollY = window.scrollY;
       const progress = scrollY / ((pageLength - 1) * window.innerHeight);
       let index = Math.floor(progress * nbImages);
-
       index = Math.max(0, Math.min(index, nbImages - 1));
 
-      const images = screen3.children;
+      const imgs = screen3.children;
       for (let i = 0; i < nbImages; i++) {
         if (i === index) {
-          images[i].classList.add('visible');
-          images[i].classList.remove('hidden');
+          imgs[i].classList.add('visible');
+          imgs[i].classList.remove('hidden');
         } else {
-          images[i].classList.add('hidden');
-          images[i].classList.remove('visible');
+          imgs[i].classList.add('hidden');
+          imgs[i].classList.remove('visible');
         }
       }
     }
@@ -63,6 +60,36 @@ window.addEventListener('DOMContentLoaded', () => {
     onScroll();
   }
 
-  startBtn.addEventListener('click', initScroll);
-  window.addEventListener('scroll', startMusic); 
+  startBtn.addEventListener('click', () => {
+    // Dès qu'on clique, on masque accueil, on affiche chargement
+    welcomeScreen.style.display = 'none';
+    loadingScreen.style.display = 'flex'; // visible
+
+    // Préchargement des images
+    images = [];
+    loadedCount = 0;
+
+    for (let i = startIndex; i <= endIndex; i++) {
+      const img = new Image();
+      img.src = `adrieng/IMG_7994_${i}.jpg`;  // adapte chemin si besoin
+      img.classList.add('hidden');
+      img.onload = () => {
+        loadedCount++;
+        loadingScreen.textContent = `Chargement des images... (${loadedCount} / ${nbImages})`;
+        if (loadedCount === nbImages) {
+          // Quand tout est chargé : on masque chargement, on affiche écran principal
+          loadingScreen.style.display = 'none';
+          screen3.style.display = 'block';
+
+          // Ajouter toutes les images à screen3
+          images.forEach(image => screen3.appendChild(image));
+
+          initScroll();
+        }
+      };
+      images.push(img);
+    }
+  });
+
+  window.addEventListener('scroll', startMusic);
 });
